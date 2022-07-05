@@ -22,7 +22,9 @@ function onRequest(client_req, client_res) {
         port: 443,
         path: real_url,
         method: client_req.method,
-        headers: client_req.headers
+        headers: client_req.headers,
+        rejectUnauthorized: false,
+        strictSSL: false
     };
     options.headers.referer = 'https://vjav.com/';
     options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36'
