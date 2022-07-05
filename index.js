@@ -14,7 +14,7 @@ function onRequest(client_req, client_res) {
     let cdn_location_regex = /ip(\d+).ahcdn.com/
     let cdn_location = client_req.url.match(cdn_location_regex);
     if (cdn_location == null) {
-        return res.end()
+        return client_res.end()
     }
     let real_url = client_req.url.replace(`/${cdn_location[0]}`, '')
     let options = {
