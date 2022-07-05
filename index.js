@@ -50,6 +50,10 @@ function onRequest(client_req, client_res) {
                 client_res.end()
             })
         } else {
+            res.headers['Access-Control-Allow-Origin']= '*';
+            res.headers['Access-Control-Allow-Methods']= 'OPTIONS, POST, GET';
+            res.headers['Access-Control-Max-Age']=2592000;
+
             client_res.writeHead(res.statusCode, res.headers);
             res.pipe(client_res, {
                 end: true
