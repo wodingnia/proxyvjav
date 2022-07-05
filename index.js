@@ -7,7 +7,7 @@ const zlib = require('zlib');
 
 //http://127.0.0.1:3000/ip230617622.ahcdn.com/key=vTSNHnrT08j+6xpxO7aPDw,s=,end=1657115636,limit=3/state=YsRCwKlg/referer=none,.vjav.com,.gstatic.com,.vjav.com/reftag=057661800/media=hls/ssd8/121/2/285133392.mp4/seg-1-v1-a1.ts
 
-http.createServer(onRequest).listen(443);
+http.createServer(onRequest).listen(5000);
 
 function onRequest(client_req, client_res) {
     console.log('serve: ' + client_req.url);
