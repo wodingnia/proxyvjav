@@ -42,7 +42,7 @@ function onRequest(client_req, client_res) {
                 body.push(chunk)
                 
             })
-            let hostport=/(http||https):.*?(:)\d*/ig;
+            let hostport=/https?:\/\/(?:w{1,3}\.)?[^\s.]+(?:\.[a-z]+)*(?::\d+)?(?![^<]*(?:<\/\w+>|\/?>))/ig;
             gunzip.on("end", function () {
                 let _body=Buffer.concat(body).toString();
                 console.log(`/${cdn_location[0]}`)
