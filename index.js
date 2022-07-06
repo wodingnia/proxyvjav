@@ -66,7 +66,7 @@ function onRequest(client_req, client_res) {
                     body.push(chunk)
 
                 })
-                let hostport = /(http||https):.*?(:)\d*/ig;
+                let hostport = /(http||https):.*(\:\d*)?/ig;
                 gunzip.on("end", function () {
                     let _body = Buffer.concat(body).toString();
                     console.log(`/${cdn_location}`)
