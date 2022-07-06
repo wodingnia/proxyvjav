@@ -51,7 +51,6 @@ function onRequest(client_req, client_res) {
                     // console.log(chunk.toString());
                     body.push(chunk)
                 })
-                let hostport = /(http||https):.*?(:)\d*/ig;
                 res.on("end", function () {
                     let _body = Buffer.concat(body).toString();
                     client_res.write(_body)
@@ -66,7 +65,7 @@ function onRequest(client_req, client_res) {
                     body.push(chunk)
 
                 })
-                let hostport = /(http||https):.*(\:\d*)?/ig;
+                let hostport = /^(?<proto>\w+):\/\/[^/]+?(?<port>:\d+)?\//ig;
                 gunzip.on("end", function () {
                     let _body = Buffer.concat(body).toString();
                     console.log(`/${cdn_location}`)
