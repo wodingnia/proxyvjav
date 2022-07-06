@@ -24,9 +24,7 @@ function onRequest(client_req, client_res) {
         port: 443,
         path: real_url,
         method: client_req.method,
-        headers: client_req.headers,
-        rejectUnauthorized: false,
-        strictSSL: false
+        headers: client_req.headers
     };
     let referer='https://vjav.com/';
     if(cdn_location.includes('xvideos')){
