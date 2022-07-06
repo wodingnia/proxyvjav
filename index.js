@@ -65,11 +65,11 @@ function onRequest(client_req, client_res) {
                     body.push(chunk)
 
                 })
-                let hostport = /^(?<proto>\w+):\/\/[^/]+?(?<port>:\d+)?\//ig;
+                let hostport = /(?:http||https)\:\/\/[^/]+?(?:\:\d+)?\//ig;
                 gunzip.on("end", function () {
                     let _body = Buffer.concat(body).toString();
                     console.log(`/${cdn_location}`)
-                    _body = _body.replace(hostport, `/${cdn_location}`);
+                    _body = _body.replace(hostport, `/${cdn_location}/`);
                     client_res.write(_body)
                     client_res.end()
                 })
