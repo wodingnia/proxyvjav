@@ -17,46 +17,64 @@ function onRequest(client_req, client_res) {
     if (cdn_location == null) {
         return client_res.end()
     }
-    cdn_location=cdn_location[0];
+    cdn_location = cdn_location[0];
     let real_url = client_req.url.replace(`/${cdn_location}`, '')
     let options = {
         hostname: cdn_location,
         port: 443,
         path: real_url,
         method: client_req.method,
-        headers: client_req.headers
+        headers: client_req.headers,
+        rejectUnauthorized: false,
+        strictSSL: false
     };
-    let referer='https://vjav.com/';
-    if(cdn_location.includes('xvideos')){
-        referer='https://www.xvideos.com';
+    let referer = 'https://vjav.com/';
+    if (cdn_location.includes('xvideos')) {
+        referer = 'https://www.xvideos.com';
+        options.headers = {};
     }
     options.headers.referer = referer;
-    options.headers['accept']='*/*';
-    options.headers['accept-encoding']='gzip, deflate, br';
+    options.headers['accept'] = '*/*';
+    options.headers['connection'] = 'close';
+    options.headers['accept-encoding'] = 'gzip, deflate, br';
     options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
     delete options.headers['upgrade-insecure-requests']
     let proxy = https.request(options, function (res) {
         if (options.path.includes(".m3u8")) {
-            let headers= JSON.parse(JSON.stringify(res.headers));
+            let headers = JSON.parse(JSON.stringify(res.headers));
             delete headers['content-encoding'];
             delete headers['transfer-encoding'];
             client_res.writeHead(res.statusCode, headers);
-            var gunzip = zlib.createGunzip();
-            res.pipe(gunzip);
-            let body=[];
-            gunzip.on("data", function (chunk) {
-                // console.log(chunk.toString());
-                body.push(chunk)
-                
-            })
-            let hostport=/(http||https):.*?(:)\d*/ig;
-            gunzip.on("end", function () {
-                let _body=Buffer.concat(body).toString();
-                console.log(`/${cdn_location}`)
-                _body=_body.replace(hostport,`/${cdn_location}`);
-                client_res.write(_body)
-                client_res.end()
-            })
+            if (cdn_location.includes('xvideos')) {
+                let body = [];
+                res.on("data", function (chunk) {
+                    // console.log(chunk.toString());
+                    body.push(chunk)
+                })
+                let hostport = /(http||https):.*?(:)\d*/ig;
+                res.on("end", function () {
+                    let _body = Buffer.concat(body).toString();
+                    client_res.write(_body)
+                    client_res.end()
+                })
+            } else {
+                var gunzip = zlib.createGunzip();
+                res.pipe(gunzip);
+                let body = [];
+                gunzip.on("data", function (chunk) {
+                    // console.log(chunk.toString());
+                    body.push(chunk)
+
+                })
+                let hostport = /(http||https):.*?(:)\d*/ig;
+                gunzip.on("end", function () {
+                    let _body = Buffer.concat(body).toString();
+                    console.log(`/${cdn_location}`)
+                    _body = _body.replace(hostport, `/${cdn_location}`);
+                    client_res.write(_body)
+                    client_res.end()
+                })
+            }
         } else {
             // res.headers['Access-Control-Allow-Origin']= '*';
             // res.headers['Access-Control-Allow-Methods']= 'OPTIONS, POST, GET';
