@@ -16,6 +16,11 @@ http.createServer(onRequest).listen(5000);
 
 function onRequest(client_req, client_res) {
     console.log('serve: ' + client_req.url);
+    if(client_req.url.includes('js.map')){
+        client_res.end();
+        return;
+    }
+
     let cdn_location_regex = /([\w|\d|-]*?)\.(xvideos-cdn||ahcdn)\.com/
     let cdn_location = client_req.url.match(cdn_location_regex);
     if (cdn_location == null) {
@@ -35,12 +40,13 @@ function onRequest(client_req, client_res) {
     let referer = 'https://vjav.com/';
     if (real_url.includes('xvideos')) {
         referer = 'https://www.xvideos.com';
-        options.headers = {};
-        options.headers['accept'] = '*/*';
-        options.headers['connection'] = 'close';
-        options.headers['accept-encoding'] = 'gzip, deflate, br';
-        options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
-        delete options.headers['upgrade-insecure-requests']
+        delete options.headers['host']
+        // options.headers = {};
+        // options.headers['accept'] = '*/*';
+        // options.headers['connection'] = 'close';
+        // options.headers['accept-encoding'] = 'gzip, deflate, br';
+        // options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
+        // delete options.headers['upgrade-insecure-requests']
     }
     if (real_url.includes('txxx.com')) {
         referer = 'https://txxx.com';
