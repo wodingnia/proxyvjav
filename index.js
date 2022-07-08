@@ -8,6 +8,10 @@ const zlib = require('zlib');
 //http://127.0.0.1:3000/ip230617622.ahcdn.com/key=vTSNHnrT08j+6xpxO7aPDw,s=,end=1657115636,limit=3/state=YsRCwKlg/referer=none,.vjav.com,.gstatic.com,.vjav.com/reftag=057661800/media=hls/ssd8/121/2/285133392.mp4/seg-1-v1-a1.ts
 //https://cdn77-vid.xvideos-cdn.com/j5cube9omh-gu4oeDVttBw==,1657078375/videos/hls/bb/8a/80/bb8a80ab5b86036d3fde58dfdd11afa5/hls.m3u8
 
+//pornzog
+//http://127.0.0.1:5000/ip230310230.ahcdn.com/key=oOqIQ9XLOfsUb3n9JfR7MA,s=,end=1657334090,limit=3/data=TpVZgP/state=YseXcHj7/buffer=2230000:2171055,1715.2/speed=253159/referer=none,.txxx.com,.gstatic.com/reftag=063878343/ssd1/121/4/153940384/tx/c12/videos/12582000/12582562/12582562_hq.mp4
+
+
 http.createServer(onRequest).listen(5000);
 
 function onRequest(client_req, client_res) {
@@ -29,16 +33,20 @@ function onRequest(client_req, client_res) {
         strictSSL: false
     };
     let referer = 'https://vjav.com/';
-    if (cdn_location.includes('xvideos')) {
+    if (real_url.includes('xvideos')) {
         referer = 'https://www.xvideos.com';
         options.headers = {};
+        options.headers['accept'] = '*/*';
+        options.headers['connection'] = 'close';
+        options.headers['accept-encoding'] = 'gzip, deflate, br';
+        options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
+        delete options.headers['upgrade-insecure-requests']
+    }
+    if (real_url.includes('txxx.com')) {
+        referer = 'https://txxx.com';
     }
     options.headers.referer = referer;
-    options.headers['accept'] = '*/*';
-    options.headers['connection'] = 'close';
-    options.headers['accept-encoding'] = 'gzip, deflate, br';
-    options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
-    delete options.headers['upgrade-insecure-requests']
+    
     let proxy = https.request(options, function (res) {
         if (options.path.includes(".m3u8")) {
             let headers = JSON.parse(JSON.stringify(res.headers));
@@ -108,3 +116,4 @@ async function streamToString(stream) {
 
     return Buffer.concat(chunks).toString("utf-8");
 }
+
