@@ -1,16 +1,7 @@
+// support xvideos,vjav,txxx,pornhub,pornzog
 const http = require('http');
 const https = require('https');
 const zlib = require('zlib');
-
-//https://ip230614840.ahcdn.com/key=DvNuO9kapWb0eeFsg13AKA,s=,end=1657155164,limit=3/state=YsTcwKlg/referer=none,.vjav.com,.gstatic.com,.vjav.com/reftag=057661800/media=hls/ssd1/121/6/285562686.m3u8
-//http://127.0.0.1:3000/ip230614840.ahcdn.com/key=DvNuO9kapWb0eeFsg13AKA,s=,end=1657155164,limit=3/state=YsTcwKlg/referer=none,.vjav.com,.gstatic.com,.vjav.com/reftag=057661800/media=hls/ssd1/121/6/285562686.m3u8
-
-//http://127.0.0.1:3000/ip230617622.ahcdn.com/key=vTSNHnrT08j+6xpxO7aPDw,s=,end=1657115636,limit=3/state=YsRCwKlg/referer=none,.vjav.com,.gstatic.com,.vjav.com/reftag=057661800/media=hls/ssd8/121/2/285133392.mp4/seg-1-v1-a1.ts
-//https://cdn77-vid.xvideos-cdn.com/j5cube9omh-gu4oeDVttBw==,1657078375/videos/hls/bb/8a/80/bb8a80ab5b86036d3fde58dfdd11afa5/hls.m3u8
-
-//pornzog
-//http://127.0.0.1:5000/ip230310230.ahcdn.com/key=oOqIQ9XLOfsUb3n9JfR7MA,s=,end=1657334090,limit=3/data=TpVZgP/state=YseXcHj7/buffer=2230000:2171055,1715.2/speed=253159/referer=none,.txxx.com,.gstatic.com/reftag=063878343/ssd1/121/4/153940384/tx/c12/videos/12582000/12582562/12582562_hq.mp4
-
 
 http.createServer(onRequest).listen(5000);
 
@@ -21,7 +12,7 @@ function onRequest(client_req, client_res) {
         return;
     }
 
-    let cdn_location_regex = /([\w|\d|-]*?)\.(xvideos-cdn||ahcdn)\.com/
+    let cdn_location_regex = /([\w|\d|-]*?)\.(xvideos-cdn||ahcdn||phncdn)\.com/
     let cdn_location = client_req.url.match(cdn_location_regex);
     if (cdn_location == null) {
         return client_res.end()
@@ -41,15 +32,13 @@ function onRequest(client_req, client_res) {
     if (real_url.includes('xvideos')) {
         referer = 'https://www.xvideos.com';
         delete options.headers['host']
-        // options.headers = {};
-        // options.headers['accept'] = '*/*';
-        // options.headers['connection'] = 'close';
-        // options.headers['accept-encoding'] = 'gzip, deflate, br';
-        // options.headers['user-agent'] = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36';
-        // delete options.headers['upgrade-insecure-requests']
     }
     if (real_url.includes('txxx.com')) {
         referer = 'https://txxx.com';
+    }
+    if(client_req.url.includes('phncdn')){
+        referer='https://cn.pornhub.com/';
+        options.headers={'accept':"*/*",'Accept-Encoding':'gzip, deflate, br','Connection':'keep-alive','cache-control':'no-cache'}
     }
     options.headers.referer = referer;
     
@@ -59,7 +48,7 @@ function onRequest(client_req, client_res) {
             delete headers['content-encoding'];
             delete headers['transfer-encoding'];
             client_res.writeHead(res.statusCode, headers);
-            if (cdn_location.includes('xvideos')) {
+            if (cdn_location.includes('xvideos')||cdn_location.includes('phncdn')) {
                 let body = [];
                 res.on("data", function (chunk) {
                     // console.log(chunk.toString());
@@ -89,10 +78,6 @@ function onRequest(client_req, client_res) {
                 })
             }
         } else {
-            // res.headers['Access-Control-Allow-Origin']= '*';
-            // res.headers['Access-Control-Allow-Methods']= 'OPTIONS, POST, GET';
-            // res.headers['Access-Control-Max-Age']=2592000;
-
             client_res.writeHead(res.statusCode, res.headers);
             res.pipe(client_res, {
                 end: true
@@ -104,22 +89,3 @@ function onRequest(client_req, client_res) {
         end: true
     });
 }
-function streamToString(stream) {
-    const chunks = [];
-    return new Promise((resolve, reject) => {
-        stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-        stream.on('error', (err) => reject(err));
-        stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-    })
-}
-
-// const result = await streamToString(stream)
-async function streamToString(stream) {
-    const chunks = [];
-    for await (const chunk of stream) {
-        chunks.push(Buffer.from(chunk));
-    }
-
-    return Buffer.concat(chunks).toString("utf-8");
-}
-
