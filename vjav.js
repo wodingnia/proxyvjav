@@ -62,15 +62,19 @@ class SearchEnginee {
             });
         })
     }
-    videoRealUrl(videoId) {
+    videoRealUrl(url) {
         return new Promise((resolve, reject) => {
-            let source_url = `https://vjav.com/api/videofile.php?video_id=${videoId}&lifetime=8640000`;
+            let regex=/video_id=(\d+)&lifetime/g
+            let match=regex.exec(url)
+            if(match==null) {return reject(new Error('url error'));}
+            let source_url = url;
             Axios.get(source_url, {
                 headers: {
                     referer: `https://vjav.com`,
                     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36'
                 }
-            }).then(({ data: body }) => {
+            }).then((res) => {
+                let body=res.data;
                 let base64_url=body[0]['video_url'];
                 resolve(`https://vjav.com${basel64_decode(base64_url)}`);
             }).catch((error) => {
@@ -87,12 +91,12 @@ module.exports = SearchEnginee;
 
 function test() {
     let enginee = new SearchEnginee("sexfight");
-    enginee.videoParser().then((data) => {
-        console.log(data)
-    });
-    // enginee.videoRealUrl(543111).then((data) => {
+    // enginee.videoParser().then((data) => {
     //     console.log(data)
     // });
+    enginee.videoRealUrl('https://vjav.com/api/videofile.php?video_id=137157&lifetime=8640000').then((data) => {
+        console.log(data)
+    });
     
 }
 test()
