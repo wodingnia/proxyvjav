@@ -21,6 +21,8 @@ class SearchEnginee {
                     const title = cache.find('p a').clone().children().remove().end();
                     //find('p a').contents().filter(function(){ return this.nodeType == 3; }).text()
                     return {
+                        rating:'1',
+                        views:cache.find('.thumb-under .metadata .bg :nth-child(2)').contents().filter(function() { return this.nodeType == 3; }).eq(0).text().trim(),
                         title: title.text(),
                         url: `https://xvideos.com${title.attr('href')}`,
                         duration: cache.find('.duration').text(),
@@ -60,14 +62,14 @@ class SearchEnginee {
 }
 
 module.exports = SearchEnginee;
-// function test() {
-//     let enginee = new SearchEnginee("sexfight");
-//     // enginee.videoParser().then((data) => {
-//     //     console.log(data)
-//     // });
-//     enginee.videoRealUrl('https://www.xvideos.com/video617900/big_tits_strip_fight').then((data) => {
-//         console.log(data)
-//     });
+function test() {
+    let enginee = new SearchEnginee("sexfight");
+    enginee.videoParser().then((data) => {
+        console.log(data)
+    });
+    // enginee.videoRealUrl('https://www.xvideos.com/video617900/big_tits_strip_fight').then((data) => {
+    //     console.log(data)
+    // });
 
-// }
-// test()
+}
+test()

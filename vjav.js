@@ -43,14 +43,19 @@ class SearchEnginee {
                     'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.53 Safari/537.36'
                 }
             }).then(({ data: body }) => {
-                resolve({
-                    title: body.videos.map((item) => { return item.title }),
-                    url: body.videos.map((item) => { return `https://vjav.com/api/videofile.php?video_id=${item.video_id}&lifetime=8640000` }),
-                    duration: body.videos.map((item) => { return item.duration }),
-                    thumb: body.videos.map((item) => { return item.scr }),
-                    gif: body.videos.map((item) => { return `https://vp1.vjav.com/c2/videos/${parseInt(item.video_id / 1000)}000/${item.video_id}/${item.video_id}_tr.mp4` }),
-                    source: 'Vjav'
-                });
+                let result=body.videos.map((video, i) => {
+                    return {
+                        rating:video.rating,
+                        views:video.video_viewed,
+                        title: video.title ,
+                        url: `https://vjav.com/api/videofile.php?video_id=${video.video_id}&lifetime=8640000` ,
+                        duration: video.duration ,
+                        thumb: video.scr ,
+                        gif: `https://vp1.vjav.com/c2/videos/${parseInt(video.video_id / 1000)}000/${video.video_id}/${video.video_id}_tr.mp4`,
+                        source: 'Vjav'
+                    };
+                }).get();
+                resolve(result);
             }).catch((error) => {
                 console.log(error)
                 reject(error)
@@ -80,14 +85,14 @@ class SearchEnginee {
 }
 module.exports = SearchEnginee;
 
-// function test() {
-//     let enginee = new SearchEnginee("sexfight");
-//     // enginee.videoParser().then((data) => {
-//     //     console.log(data)
-//     // });
-//     enginee.videoRealUrl(543111).then((data) => {
-//         console.log(data)
-//     });
+function test() {
+    let enginee = new SearchEnginee("sexfight");
+    enginee.videoParser().then((data) => {
+        console.log(data)
+    });
+    // enginee.videoRealUrl(543111).then((data) => {
+    //     console.log(data)
+    // });
     
-// }
-// test()
+}
+test()

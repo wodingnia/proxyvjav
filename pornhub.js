@@ -73,6 +73,8 @@ class SearchEnginee {
                     const thumb = data.find('img').attr('data-defaultthumb') || '';
 
                     return {
+                        views:data.find('span.videos :nth-child(1)').text(),
+                        rating:data.find('span.videos :nth-child(2)').text(),
                         title: data.find('span.info span.title').text().trim(),
                         url: data.attr('href'),
                         duration: data.find('.duration').text(),
@@ -139,13 +141,13 @@ module.exports = SearchEnginee;
 
 function test() {
     let enginee = new SearchEnginee("sexfight");
-    // enginee.videoParser().then((data) => {
-    //     // console.log(data);
+    enginee.videoParser().then((data) => {
+        // console.log(data);
 
-    // });
-    enginee.videoRealUrl('https://www.thumbzilla.com/video/ph5d33af7e3e566/male-vs-female-sexfight-loser-cums-first-and-get-humiliated').then((data) => {
-        console.log(data)
     });
+    // enginee.videoRealUrl('https://www.thumbzilla.com/video/ph5d33af7e3e566/male-vs-female-sexfight-loser-cums-first-and-get-humiliated').then((data) => {
+    //     console.log(data)
+    // });
 
 }
 test()
