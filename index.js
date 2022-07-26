@@ -3,7 +3,7 @@ const https = require('https');
 const zlib = require('zlib');
 
 http.createServer(onRequest).listen(5000);
-function getPornhub(client_res,video_page_url) {
+function getPornhub(client_res, video_page_url) {
     let url = new URL(video_page_url)
     let options = {
         hostname: url.host,
@@ -66,15 +66,13 @@ function onRequest(client_req, client_res) {
         client_res.end();
         return;
     }
-    client_res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
-    client_res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-   
-     // Set custom headers for CORS
-     client_res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
-     
-    if(client_req.url.includes('www.thumbzilla.com')){
-        getPornhub(client_res,`https:/${client_req.url}`)
-        return 
+    client_res.setHeader("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
+    client_res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    client_res.setHeader('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+
+    if (client_req.url.includes('www.thumbzilla.com')) {
+        getPornhub(client_res, `https:/${client_req.url}`)
+        return
     }
     let cdn_location_regex = /([\w|\d|-]*?)\.(xvideos-cdn||ahcdn||phncdn)\.com/
     let cdn_location = client_req.url.match(cdn_location_regex);
