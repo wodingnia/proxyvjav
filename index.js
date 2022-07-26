@@ -103,7 +103,7 @@ function onRequest(client_req, client_res) {
         options.headers = { 'accept': "*/*", 'Accept-Encoding': 'gzip, deflate, br', 'Connection': 'keep-alive', 'cache-control': 'no-cache' }
     }
     options.headers.referer = referer;
-
+    delete options.headers['host']
     let proxy = https.request(options, function (res) {
         if (options.path.includes(".m3u8")) {
             let headers = JSON.parse(JSON.stringify(res.headers));
