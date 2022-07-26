@@ -66,6 +66,12 @@ function onRequest(client_req, client_res) {
         client_res.end();
         return;
     }
+    client_res.header("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
+    client_res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+   
+     // Set custom headers for CORS
+     client_res.header('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+     
     if(client_req.url.includes('www.thumbzilla.com')){
         getPornhub(client_res,`https:/${client_req.url}`)
         return 
