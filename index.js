@@ -66,9 +66,9 @@ function onRequest(client_req, client_res) {
         client_res.end();
         return;
     }
-    client_res.setHeader("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
-    client_res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    client_res.setHeader('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
+    // client_res.setHeader("Access-Control-Allow-Origin", "*"); // restrict it to the required domain
+    // client_res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    // client_res.setHeader('Access-Control-Allow-Headers', 'Content-type,Accept,X-Access-Token,X-Key');
 
     if (client_req.url.includes('www.thumbzilla.com')) {
         getPornhub(client_res, `https:/${client_req.url}`)
@@ -91,11 +91,11 @@ function onRequest(client_req, client_res) {
         strictSSL: false
     };
     let referer = 'https://vjav.com/';
-    if (real_url.includes('xvideos')) {
+    if (cdn_location.includes('xvideos')) {
         referer = 'https://www.xvideos.com';
         delete options.headers['host']
     }
-    if (real_url.includes('txxx.com')) {
+    if (cdn_location.includes('txxx.com')) {
         referer = 'https://txxx.com';
     }
     if (client_req.url.includes('phncdn')) {
